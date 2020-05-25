@@ -34,7 +34,7 @@ def main():
     play_game(secret_word)
     desire_to_play_again = play_another_game()
     while desire_to_play_again == "YES":
-        play_another_game()
+        desire_to_play_again = play_another_game()
 
 
 def play_another_game():
