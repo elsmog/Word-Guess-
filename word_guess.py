@@ -54,8 +54,7 @@ def play_another_game():
     if desire_to_play_again == "YES":
         secret_word = get_word()
         play_game(secret_word)
-    elif desire_to_play_again == "NO" \
-                                 "":
+    elif desire_to_play_again == "NO":
         print("Goodbye!")
     return desire_to_play_again
 
