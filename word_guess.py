@@ -54,7 +54,8 @@ def play_another_game():
     if desire_to_play_again == "YES":
         secret_word = get_word()
         play_game(secret_word)
-    else:
+    elif desire_to_play_again == "NO" \
+                                 "":
         print("Goodbye!")
     return desire_to_play_again
 
@@ -196,6 +197,7 @@ def ask_for_input():
     Returns: user_guess {string}
     """
     user_guess = input("Type a single letter here, then press enter: ")
+    print("------------------------------------------------")
     return user_guess
 
 
