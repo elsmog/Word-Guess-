@@ -1,7 +1,20 @@
 """
 File: word_guess.py
 -------------------
-Fill in this comment.
+By Elyssa Kober
+
+When the user plays WordGuess, the computer first selects a secret word at
+random from a list. The program then prints out a row of dashes— one for each
+letter in the secret word and asks the user to guess a letter.
+
+If the user guesses a letter that is in the word, the word is redisplayed with
+all instances of that letter shown in the correct positions, along with any
+letters correctly guessed on previous turns.
+
+If the letter does not appear in the word, the user is charged with an
+incorrect guess. The user keeps guessing letters until either (1) the user has
+correctly guessed all the letters in the word or (2) the user has made eight
+incorrect guesses.
 """
 
 import random
@@ -12,8 +25,10 @@ INITIAL_GUESSES = 8  # Initial number of guesses player starts with
 
 def main():
     """
-    To play the game, we first select the secret word for the
-    player to guess and then play the game using that secret word.
+    To play the game, we first select the secret word for the user to guess and
+    then play the game using that secret word. Then it prompts the user
+    whether they would like to play again. While the user wants to play, the
+    game continues.
     """
     secret_word = get_word()
     play_game(secret_word)
@@ -24,9 +39,12 @@ def main():
 
 def play_another_game():
     """
-    Summary:
-    Parameters:
-    Returns:
+    Summary: This function asks the user if they would like to play another
+      round with a new secret_word. If the user says yes, secret_word is
+      reassigned with the return value of get_word(), and play_game() is
+      called.
+    Parameters: none
+    Returns: desire_to_play_again {string}
     """
     desire_to_play_again = input("Do you want to play again? Type YES or NO: ")
     desire_to_play_again = desire_to_play_again.upper()
@@ -43,36 +61,57 @@ def play_another_game():
 
 def play_game(secret_word):
     """
-    Summary:
-    Parameters:
-    Returns:
+    Summary: To begin, several variables are assigned the return values from
+      prepare_for_game(). While the concealed_word is not identical to
+      secret_word and remaining guesses > 0, user_guess is updated with a new
+      value inputted by the user. If a non-singular or non-alphabetic
+      character is entered, request_correct_type_guess() is called and a
+      new value is assigned to user_guess. If user_guess is not found in
+      concealed_word, it is added to guess_list. check_for_correct_guess()
+      is called and concealed_word_list is assigned its return value.
+      concealed_word is reassigned as an empty string. It is then updated
+      with the return value of update_concealed_word(). Finally,
+      remaining_guesses and original_concealed_word are updated with the
+      return values of check_for_progress().
+    Parameters: secret_word {string}
+    Returns: none
     """
     guess_list, remaining_guesses, concealed_word, original_concealed_word, \
-    concealed_word_list = prepare_for_game(secret_word)
+        concealed_word_list = prepare_for_game(secret_word)
     while (concealed_word != secret_word) and (remaining_guesses > 0):
         print("You have " + str(remaining_guesses) + " guesses left")
         user_guess = ask_for_input()
         while (len(user_guess) > 1) or (user_guess.isalpha() is False):
-            user_guess = request_correct_type_guess(concealed_word, user_guess,
-                                                    guess_list)
+            user_guess = \
+                request_correct_type_guess(concealed_word, user_guess,
+                                           guess_list)
         user_guess = user_guess.upper()
         if user_guess not in concealed_word:
             guess_list.append(user_guess)
         concealed_word_list = check_for_correct_guess(secret_word, user_guess,
                                                       concealed_word_list)
         concealed_word = ""
-        concealed_word = update_concealed_word(concealed_word_list,
-                                               concealed_word)
-        remaining_guesses, original_concealed_word = check_for_progress(
-            concealed_word, original_concealed_word, remaining_guesses,
-            user_guess, guess_list, secret_word)
-
+        concealed_word = \
+            update_concealed_word(concealed_word_list, concealed_word)
+        remaining_guesses, original_concealed_word = \
+            check_for_progress(concealed_word, original_concealed_word,
+                               remaining_guesses, user_guess, guess_list,
+                               secret_word)
 
 def prepare_for_game(secret_word):
     """
-    Summary:
-    Parameters:
-    Returns:
+    Summary: This initializes several variables in preparation for the game
+      to begin. guess_list is created as an empty list. remaining_guesses is
+      assigned the value of INITIAL_GUESSES. concealed_word is assigned the
+      return value of create_concealed_word(). original_concealed_word is
+      assigned the value of concealed_word. concealed_word_list is assigned the
+      return value of create_concealed_word_list().
+    Parameters: secret_word {string}
+    Returns: guess_list {list}
+             remaining_guesses {int}
+             concealed_word {string}
+             original_concealed_word {string}
+             concealed_word_list {list}
     """
     guess_list = []
     remaining_guesses = INITIAL_GUESSES
@@ -87,27 +126,39 @@ def prepare_for_game(secret_word):
 def check_for_progress(concealed_word, original_concealed_word,
                        remaining_guesses, user_guess, guess_list, secret_word):
     """
-    Summary:
-    Parameters:
-    Returns:
+    Summary: This function determines whether the user has made an incorrect or
+      correct guess. If the concealed_word has not updated during this round
+      (indicating incorrect guess), and remaining_guesses > 1,
+      declare_incorrect_guess is called. If remaining_guesses <= 1,
+      declare_lost_game is called. If the concealed_word has updated during
+      this round (indicating correct guess), and the concealed_word is not
+      yet identical to secret_word, declare_correct_guess is called. If the
+      concealed_word is identical to secret_word, the user is told the
+      secret_word.
+    Parameters: concealed_word {string}
+                original_concealed_word {string}
+                remaining_guesses {int}
+                user_guess {string}
+                guess_list {list}
+                secret_word {string}
+    Returns: remaining_guesses {int}
+             original_concealed_word {string}
     """
-    if (concealed_word == original_concealed_word) and (user_guess not in
-                                                        concealed_word):
+    if (concealed_word == original_concealed_word) \
+            and (user_guess not in concealed_word):
         if remaining_guesses > 1:
-            remaining_guesses = declare_incorrect_guess(user_guess,
-                                                        remaining_guesses,
-                                                        concealed_word,
-                                                        guess_list)
+            remaining_guesses = \
+                declare_incorrect_guess(user_guess, remaining_guesses,
+                                        concealed_word, guess_list)
         else:
             remaining_guesses = declare_lost_game(remaining_guesses,
                                                   secret_word)
     else:
         print("That guess is correct.")
         if concealed_word != secret_word:
-            original_concealed_word = declare_correct_guess(concealed_word,
-                                                            secret_word,
-                                                            guess_list,
-                                                       original_concealed_word)
+            original_concealed_word = \
+                declare_correct_guess(concealed_word, guess_list,
+                                      original_concealed_word)
         else:
             print("Congratulations, the word is: " + secret_word)
     return remaining_guesses, original_concealed_word
@@ -115,9 +166,11 @@ def check_for_progress(concealed_word, original_concealed_word,
 
 def update_concealed_word(concealed_word_list, concealed_word):
     """
-    Summary:
-    Parameters:
-    Returns:
+    Summary: This updates the value of concealed_word using the elements of
+      concealed_word_list.
+    Parameters: concealed_word_list {list}
+                concealed_word {string}
+    Returns: concealed_word {string}
     """
     for elem in concealed_word_list:
         concealed_word += elem
@@ -126,9 +179,10 @@ def update_concealed_word(concealed_word_list, concealed_word):
 
 def show_word_and_guesses(concealed_word, guess_list):
     """
-    Summary:
-    Parameters:
-    Returns:
+    Summary: This prints the values of concealed_word and guess_list.
+    Parameters: concealed_word {string}
+                guess_list {list}
+    Returns: none
     """
     print("The word now looks like this: " + concealed_word)
     print("You have guessed: " + str(guess_list))
@@ -136,20 +190,24 @@ def show_word_and_guesses(concealed_word, guess_list):
 
 def ask_for_input():
     """
-    Summary:
-    Parameters:
-    Returns:
+    Summary: This prompts the user to input a single character, which is
+      assigned to user_guess.
+    Parameters: none
+    Returns: user_guess {string}
     """
     user_guess = input("Type a single letter here, then press enter: ")
     return user_guess
 
 
-def declare_correct_guess(concealed_word, secret_word, guess_list,
-                          original_concealed_word):
+def declare_correct_guess(concealed_word, guess_list, original_concealed_word):
     """
-    Summary:
-    Parameters:
-    Returns:
+    Summary: This declares that the user_guess was correct. Then it calls
+      show_word_and_guesses, and updates original_concealed_word with the
+      value of concealed_word.
+    Parameters: concealed_word {string}
+                guess_list {list}
+                original_concealed_word {string}
+    Returns: original_concealed_word {string}
     """
     show_word_and_guesses(concealed_word, guess_list)
     original_concealed_word = concealed_word
@@ -158,9 +216,12 @@ def declare_correct_guess(concealed_word, secret_word, guess_list,
 
 def declare_lost_game(remaining_guesses, secret_word):
     """
-    Summary:
-    Parameters:
-    Returns:
+    Summary: This declares that the user_guess was not correct, and decreases
+      remaining_guesses by 1. Then it declares that the user has run out
+      of guesses and lost the game.
+    Parameters: remaining_guesses {int}
+                secret_word {string}
+    Returns: remaining_guesses {int}
     """
     remaining_guesses -= 1
     print("Sorry, you lost. The secret word was: " + secret_word)
@@ -170,9 +231,13 @@ def declare_lost_game(remaining_guesses, secret_word):
 def declare_incorrect_guess(user_guess, remaining_guesses, concealed_word,
                             guess_list):
     """
-    Summary:
-    Parameters:
-    Returns:
+    Summary:This declares that the user_guess was not correct, and decreases
+      remaining_guesses by 1. Then show_word_and_guesses is called.
+    Parameters: user_guess {string}
+                remaining_guesses {int}
+                concealed_word {string}
+                guess_list {list}
+    Returns: remaining_guesses {int}
     """
     print("There are no " + user_guess + "'s in the word")
     remaining_guesses -= 1
