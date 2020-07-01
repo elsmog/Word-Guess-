@@ -88,6 +88,7 @@ def play_game(secret_word):
         user_guess = user_guess.upper()
         if user_guess not in concealed_word:
             guess_list.append(user_guess)
+            guess_list.sort()
         concealed_word_list = check_for_correct_guess(secret_word, user_guess,
                                                       concealed_word_list)
         concealed_word = ""
@@ -154,13 +155,21 @@ def check_for_progress(concealed_word, original_concealed_word,
             remaining_guesses = declare_lost_game(remaining_guesses,
                                                   secret_word)
     else:
-        print("That guess is correct.")
-        if concealed_word != secret_word:
+        if user_guess in guess_list:
+            print("\n" * 100)
+            print("You have already guessed that letter.")
             original_concealed_word = \
                 declare_correct_guess(concealed_word, guess_list,
                                       original_concealed_word)
         else:
-            print("Congratulations, the word is: " + secret_word)
+            print("\n" * 100)
+            print("That guess is correct.")
+            if concealed_word != secret_word:
+                original_concealed_word = \
+                    declare_correct_guess(concealed_word, guess_list,
+                                          original_concealed_word)
+            else:
+                print("Congratulations, the word is: " + secret_word)
     return remaining_guesses, original_concealed_word
 
 
@@ -240,6 +249,7 @@ def declare_incorrect_guess(user_guess, remaining_guesses, concealed_word,
                 guess_list {list}
     Returns: remaining_guesses {int}
     """
+    print("\n" * 100)
     print("There are no " + user_guess + "'s in the word")
     remaining_guesses -= 1
     show_word_and_guesses(concealed_word, guess_list)
