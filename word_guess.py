@@ -31,6 +31,7 @@ def main():
     game continues.
     """
     secret_word = get_word()
+    print("\n" * 100)
     play_game(secret_word)
     desire_to_play_again = play_another_game()
     while desire_to_play_again == "YES":
@@ -53,6 +54,7 @@ def play_another_game():
         desire_to_play_again = desire_to_play_again.upper()
     if desire_to_play_again == "YES":
         secret_word = get_word()
+        print("\n" * 100)
         play_game(secret_word)
     elif desire_to_play_again == "NO":
         print("Goodbye!")
@@ -86,18 +88,15 @@ def play_game(secret_word):
                 request_correct_type_guess(concealed_word, user_guess,
                                            guess_list)
         user_guess = user_guess.upper()
-        if user_guess not in concealed_word:
-            guess_list.append(user_guess)
-            guess_list.sort()
-        concealed_word_list = check_for_correct_guess(secret_word, user_guess,
-                                                      concealed_word_list)
+        concealed_word_list = check_for_correct_guess(secret_word,
+            user_guess, concealed_word_list)
         concealed_word = ""
         concealed_word = \
             update_concealed_word(concealed_word_list, concealed_word)
-        remaining_guesses, original_concealed_word = \
+        remaining_guesses, original_concealed_word, guess_list = \
             check_for_progress(concealed_word, original_concealed_word,
-                               remaining_guesses, user_guess, guess_list,
-                               secret_word)
+                remaining_guesses, user_guess, guess_list, secret_word)
+
 
 def prepare_for_game(secret_word):
     """
@@ -145,22 +144,22 @@ def check_for_progress(concealed_word, original_concealed_word,
     Returns: remaining_guesses {int}
              original_concealed_word {string}
     """
-    if (concealed_word == original_concealed_word) \
-            and (user_guess not in concealed_word):
-        if remaining_guesses > 1:
-            remaining_guesses = \
-                declare_incorrect_guess(user_guess, remaining_guesses,
-                                        concealed_word, guess_list)
-        else:
-            remaining_guesses = declare_lost_game(remaining_guesses,
-                                                  secret_word)
+    if user_guess in guess_list:
+        print("\n" * 100)
+        print("You have already guessed that letter.")
+        show_word_and_guesses(concealed_word, guess_list)
     else:
-        if user_guess in guess_list:
-            print("\n" * 100)
-            print("You have already guessed that letter.")
-            original_concealed_word = \
-                declare_correct_guess(concealed_word, guess_list,
-                                      original_concealed_word)
+        guess_list.append(user_guess)
+        guess_list.sort()
+        if (concealed_word == original_concealed_word) \
+                and (user_guess not in concealed_word):
+            if remaining_guesses > 1:
+                remaining_guesses = \
+                    declare_incorrect_guess(user_guess, remaining_guesses,
+                                            concealed_word, guess_list)
+            else:
+                remaining_guesses = declare_lost_game(remaining_guesses,
+                                                      secret_word)
         else:
             print("\n" * 100)
             print("That guess is correct.")
@@ -170,7 +169,7 @@ def check_for_progress(concealed_word, original_concealed_word,
                                           original_concealed_word)
             else:
                 print("Congratulations, the word is: " + secret_word)
-    return remaining_guesses, original_concealed_word
+    return remaining_guesses, original_concealed_word, guess_list
 
 
 def update_concealed_word(concealed_word_list, concealed_word):
@@ -234,6 +233,7 @@ def declare_lost_game(remaining_guesses, secret_word):
     Returns: remaining_guesses {int}
     """
     remaining_guesses -= 1
+    print("\n" * 100)
     print("Sorry, you lost. The secret word was: " + secret_word)
     return remaining_guesses
 
@@ -287,6 +287,7 @@ def request_correct_type_guess(concealed_word, guess_list, user_guess):
                   multiple alphabetic characters
     Returns: user_guess {string} -- a single alphabetic character
     """
+    print("\n" * 100)
     print("Guess should only be a single, alphabetic character.")
     show_word_and_guesses(concealed_word, guess_list)
     user_guess = ask_for_input()
@@ -317,7 +318,6 @@ def create_concealed_word(secret_word):
     word_length = len(secret_word)
     concealed_word = ""
     for i in range(word_length):
-        ch = secret_word[i]
         concealed_word += "-"
     return concealed_word
 
