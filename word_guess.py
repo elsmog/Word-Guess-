@@ -88,8 +88,16 @@ def play_game(secret_word):
                 request_correct_type_guess(concealed_word, user_guess,
                                            guess_list)
         user_guess = user_guess.upper()
+<<<<<<< HEAD
         concealed_word_list = check_for_correct_guess(secret_word,
             user_guess, concealed_word_list)
+=======
+        if user_guess not in concealed_word:
+            guess_list.append(user_guess)
+            guess_list.sort()
+        concealed_word_list = check_for_correct_guess(secret_word, user_guess,
+                                                      concealed_word_list)
+>>>>>>> d538fe85df423988119600da8891801b81a8076d
         concealed_word = ""
         concealed_word = \
             update_concealed_word(concealed_word_list, concealed_word)
@@ -149,6 +157,7 @@ def check_for_progress(concealed_word, original_concealed_word,
         print("You have already guessed that letter.")
         show_word_and_guesses(concealed_word, guess_list)
     else:
+<<<<<<< HEAD
         guess_list.append(user_guess)
         guess_list.sort()
         if (concealed_word == original_concealed_word) \
@@ -160,6 +169,14 @@ def check_for_progress(concealed_word, original_concealed_word,
             else:
                 remaining_guesses = declare_lost_game(remaining_guesses,
                                                       secret_word)
+=======
+        if user_guess in guess_list:
+            print("\n" * 100)
+            print("You have already guessed that letter.")
+            original_concealed_word = \
+                declare_correct_guess(concealed_word, guess_list,
+                                      original_concealed_word)
+>>>>>>> d538fe85df423988119600da8891801b81a8076d
         else:
             print("\n" * 100)
             print("That guess is correct.")
@@ -169,7 +186,11 @@ def check_for_progress(concealed_word, original_concealed_word,
                                           original_concealed_word)
             else:
                 print("Congratulations, the word is: " + secret_word)
+<<<<<<< HEAD
     return remaining_guesses, original_concealed_word, guess_list
+=======
+    return remaining_guesses, original_concealed_word
+>>>>>>> d538fe85df423988119600da8891801b81a8076d
 
 
 def update_concealed_word(concealed_word_list, concealed_word):
